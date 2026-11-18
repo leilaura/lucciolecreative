@@ -9,7 +9,7 @@ const singletons = new Set(['home', 'siteSettings']);
 export default defineConfig({
   name: 'lucciolecreative',
   title: 'Lucciole Creative',
-  projectId: process.env.SANITY_STUDIO_PROJECT_ID ?? 'DA_COMPILARE',
+  projectId: process.env.SANITY_STUDIO_PROJECT_ID ?? '3hz4qhjl',
   dataset: process.env.SANITY_STUDIO_DATASET ?? 'production',
 
   plugins: [

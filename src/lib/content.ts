@@ -5,7 +5,8 @@ import { createImageUrlBuilder } from '@sanity/image-url';
 import { fallback } from '../data/fallback';
 import type { ImageRef, SiteContent } from './types';
 
-const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
+// Il Project ID non è segreto: finisce comunque nel sito pubblicato.
+const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID || '3hz4qhjl';
 const dataset = import.meta.env.PUBLIC_SANITY_DATASET || 'production';
 
 const client = projectId
@@ -46,7 +47,13 @@ async function load(): Promise<SiteContent> {
   if (!client) return fallback;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const d: any = await client.fetch(QUERY);
+  let d: any;
+  try {
+    d = await client.fetch(QUERY);
+  } catch (err) {
+    console.warn('[sanity] contenuti non raggiungibili, uso i testi di riserva:', (err as Error).message);
+    return fallback;
+  }
   const home = d.home
     ? {
         ...fallback.home,
