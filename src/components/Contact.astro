@@ -1,0 +1,45 @@
+---
+import { rich } from '../lib/text';
+import type { Home, SiteSettings } from '../lib/types';
+
+interface Props { contact: Home['contact']; settings: SiteSettings }
+const { contact, settings } = Astro.props;
+const wa = settings.whatsapp?.replace(/[^\d]/g, '');
+---
+<section class="contact blk band" id="contatti" aria-labelledby="ct-t">
+  <div class="wrap">
+    <div class="booking">
+      <h2 id="ct-t" set:html={rich(contact.title)} />
+      <p class="sub">{contact.text}</p>
+      {settings.bookingUrl ? (
+        <a class="btn btn-y" href={settings.bookingUrl} target="_blank" rel="noopener">Scegli giorno e orario</a>
+      ) : (
+        <p class="todo">Qui andrà il calendario di prenotazione (Cal.com). Il link si inserisce in Sanity, in Impostazioni.</p>
+      )}
+    </div>
+    <div class="write">
+      <h3>{contact.writeTitle}</h3>
+      <p>{contact.writeText}</p>
+      {wa && <a class="btn btn-ink" href={`https://wa.me/${wa}`} target="_blank" rel="noopener">Scrivici su WhatsApp</a>}
+      <a class="btn btn-o" href={`mailto:${settings.email}`}>Mandaci una email</a>
+      <p class="addr">
+        {settings.whatsapp && <><b>WhatsApp</b> {settings.whatsapp}<br /></>}
+        <b>Email</b> <a href={`mailto:${settings.email}`}>{settings.email}</a><br />
+        <b>Instagram</b> <a href={`https://www.instagram.com/${settings.instagram}`} target="_blank" rel="noopener">@{settings.instagram}</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact { background: var(--azzurro); }
+  .wrap { display: grid; grid-template-columns: 1.3fr .9fr; gap: 24px; align-items: start; }
+  .booking { background: var(--crema); border-radius: calc(var(--r) + 6px); padding: clamp(22px, 3vw, 36px); min-width: 0; }
+  .booking h2 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); }
+  .sub { color: var(--ink-soft); margin: 10px 0 22px; }
+  .todo { border: 2px dashed var(--line); border-radius: 12px; padding: 14px 16px; font-size: .95rem; color: var(--ink-soft); }
+  .write { display: flex; flex-direction: column; gap: 12px; padding-top: 8px; }
+  .write h3 { font-size: 1.6rem; margin-bottom: 6px; }
+  .addr { font-size: 1rem; line-height: 1.8; }
+  @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } }
+</style>

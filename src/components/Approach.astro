@@ -1,0 +1,97 @@
+---
+import { rich } from '../lib/text';
+import type { Home } from '../lib/types';
+
+interface Props { approach: Home['approach'] }
+const { approach } = Astro.props;
+---
+<section class="pband band" id="metodo" aria-labelledby="ap-t">
+  <div class="wrap pb-in rev">
+    <div class="pb-t">
+      <p class="eyebrow">{approach.eyebrow}</p>
+      <h2 id="ap-t" set:html={rich(approach.title)} />
+      <p>{approach.text}</p>
+    </div>
+    <img class="pb-img" src={approach.image.url} alt={approach.image.alt} width="414" height="624" loading="lazy" />
+  </div>
+</section>
+
+<section class="light blk band" aria-label="Luce e direzione">
+  <div class="wrap">
+    <div class="ld">
+      {approach.pillars.map((p) => (
+        <article>
+          <span class="big">{p.big}</span>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+        </article>
+      ))}
+    </div>
+    <ul class="pairs">
+      {approach.pairs.map((p) => (
+        <li><span>{p.from}</span><span aria-hidden="true">→</span><span>{p.to}</span></li>
+      ))}
+    </ul>
+
+    <div class="credo">
+      <div>
+        <p class="eyebrow">In cosa crediamo</p>
+        <p class="quote" set:html={rich(approach.beliefsQuote)} />
+      </div>
+      <ul class="beliefs">
+        {approach.beliefs.map((b) => (
+          <li><div><h3>{b.title}</h3><p>{b.text}</p></div></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .light { background: var(--azzurro-pale); }
+  .ld { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .ld article {
+    background: var(--crema); border-radius: var(--r); padding: clamp(26px, 3.5vw, 44px);
+    display: flex; flex-direction: column; gap: 14px; min-width: 0;
+  }
+  .big {
+    font: 400 clamp(3rem, 7vw, 5.4rem)/.9 'ivybodoni-condensed', var(--f-serif);
+    letter-spacing: -.01em;
+  }
+  .ld article:first-child .big { color: var(--azzurro-deep); }
+  .ld p { color: var(--ink-soft); }
+  .pairs {
+    list-style: none; margin: 32px 0 0; background: var(--crema); border-radius: var(--r);
+    padding: 8px clamp(20px, 3vw, 36px);
+  }
+  .pairs li {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px;
+    align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line);
+  }
+  .pairs li:first-child { border-top: 0; }
+  .pairs li span:nth-child(2) { color: var(--azzurro-deep); font-weight: 700; }
+  .pairs li span:last-child { font: italic 400 1.25rem/1.2 var(--f-serif); color: var(--azzurro-deep); }
+  @media (max-width: 760px) {
+    .ld { grid-template-columns: 1fr; }
+    .pairs li { grid-template-columns: 1fr; gap: 2px; }
+    .pairs li span:nth-child(2) { display: none; }
+  }
+
+  .credo {
+    margin-top: clamp(64px, 8vw, 104px);
+    display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(32px, 6vw, 90px); align-items: start;
+  }
+  .credo .eyebrow { margin-bottom: 18px; }
+  .quote { font: 700 clamp(1.9rem, 3.4vw, 2.8rem)/1.1 var(--f-display); letter-spacing: -.02em; text-wrap: balance; }
+  .quote :global(.it) { display: block; color: var(--azzurro-deep); margin-top: .15em; }
+  .beliefs { list-style: none; padding: 0; margin: 0; }
+  .beliefs li { display: grid; grid-template-columns: 28px 1fr; gap: 16px; padding: 20px 0; border-top: 1px solid var(--line); }
+  .beliefs li:last-child { border-bottom: 1px solid var(--line); }
+  .beliefs li::before {
+    content: ''; width: 16px; height: 16px; border-radius: 50%; margin-top: 5px;
+    background: var(--giallo); box-shadow: 0 0 10px 2px rgba(253, 214, 49, .7);
+  }
+  .beliefs h3 { font-size: 1.2rem; margin-bottom: 4px; }
+  .beliefs p { color: var(--ink-soft); }
+  @media (max-width: 860px) { .credo { grid-template-columns: 1fr; } }
+</style>

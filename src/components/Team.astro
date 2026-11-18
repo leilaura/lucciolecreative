@@ -1,0 +1,58 @@
+---
+import { rich } from '../lib/text';
+import type { Home, TeamMember } from '../lib/types';
+
+interface Props { intro: Home['team']; team: TeamMember[] }
+const { intro, team } = Astro.props;
+---
+<section class="team blk band" id="team" aria-labelledby="tm-t">
+  <div class="wrap">
+    <div class="head-row">
+      <h2 id="tm-t" set:html={rich(intro.title)} />
+      <p>{intro.text}</p>
+    </div>
+    <div class="people">
+      {team.map((m) => (
+        <article class="person">
+          <div class="portrait">
+            {m.photo ? <img src={m.photo.url} alt={m.photo.alt || `Foto di ${m.name}`} loading="lazy" /> : <span aria-hidden="true">{m.name[0]}</span>}
+          </div>
+          <h3>{m.name}</h3>
+          <p class="role">{m.role}</p>
+          <p class="bio">{m.bio}</p>
+          {m.skills.length > 0 && <ul class="skills">{m.skills.map((s) => <li>{s}</li>)}</ul>}
+          {m.quote && <blockquote>“{m.quote}”</blockquote>}
+        </article>
+      ))}
+    </div>
+    <p class="together" set:html={rich(intro.together)} />
+  </div>
+</section>
+
+<style>
+  .team { background: var(--azzurro-pale); }
+  .people { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .person {
+    background: var(--crema); border-radius: calc(var(--r) + 6px); padding: 22px 22px 28px;
+    display: flex; flex-direction: column; gap: 12px; min-width: 0;
+  }
+  .portrait {
+    aspect-ratio: 1; width: min(200px, 72%); border-radius: 50%; background: var(--azzurro);
+    display: grid; place-items: center; position: relative; margin-bottom: 8px; overflow: visible;
+  }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .portrait span { font: italic 500 clamp(3rem, 6vw, 4.6rem) var(--f-serif); color: var(--crema); }
+  .portrait::after {
+    content: ''; position: absolute; right: 8%; top: 10%; width: 9%; aspect-ratio: 1; border-radius: 50%;
+    background: var(--giallo); box-shadow: 0 0 16px 5px rgba(253, 214, 49, .7);
+  }
+  h3 { font-size: 1.6rem; }
+  .role { font: italic 400 1.25rem/1.2 var(--f-serif); color: var(--azzurro-deep); }
+  .bio { color: var(--ink-soft); font-size: 1rem; }
+  .skills { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 4px 0 0; }
+  .skills li { font-size: .82rem; font-weight: 600; background: var(--azzurro-pale); border-radius: 999px; padding: .3em .75em; }
+  blockquote { margin: 6px 0 0; padding-top: 14px; border-top: 1px solid var(--line); font: italic 400 1.2rem/1.3 var(--f-serif); }
+  .together { margin-top: 18px; background: var(--ink); color: var(--crema); border-radius: var(--r); padding: 22px 28px; font-size: 1.1rem; }
+  .together :global(.it) { color: var(--giallo); }
+  @media (max-width: 860px) { .people { grid-template-columns: 1fr; } }
+</style>

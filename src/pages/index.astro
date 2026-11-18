@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Need from '../components/Need.astro';
+import Approach from '../components/Approach.astro';
+import Services from '../components/Services.astro';
+import Steps from '../components/Steps.astro';
+import Projects from '../components/Projects.astro';
+import Team from '../components/Team.astro';
+import Faq from '../components/Faq.astro';
+import Contact from '../components/Contact.astro';
+import NightFooter from '../components/NightFooter.astro';
+import { getContent } from '../lib/content';
+import { plain } from '../lib/text';
+
+const { settings, home, services, projects, team, faqs } = await getContent();
+const showProjects = projects.length > 0;
+---
+<Base title={`${settings.name} · ${plain(settings.payoff)}`} description={home.hero.lead}>
+  <Nav name={settings.name} payoff={settings.payoff} showProjects={showProjects} />
+  <main id="contenuto">
+    <div id="top"></div>
+    <Hero hero={home.hero} sectors={home.sectors} />
+    <Need need={home.need} />
+    <Approach approach={home.approach} />
+    <Services intro={home.services} services={services} />
+    <Steps steps={home.steps} />
+    {showProjects && <Projects intro={home.projects} projects={projects} />}
+    <Team intro={home.team} team={team} />
+    <Faq title={home.faq.title} faqs={faqs} />
+    <Contact contact={home.contact} settings={settings} />
+  </main>
+  <NightFooter night={home.night} settings={settings} showProjects={showProjects} />
+</Base>

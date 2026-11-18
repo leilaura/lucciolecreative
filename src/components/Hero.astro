@@ -1,0 +1,85 @@
+---
+import { rich } from '../lib/text';
+import type { Home } from '../lib/types';
+
+interface Props { hero: Home['hero']; sectors: string[] }
+const { hero, sectors } = Astro.props;
+---
+<section class="hero band" aria-labelledby="hero-t">
+  <div class="wrap hero-in">
+    <div>
+      <p class="eyebrow">{hero.eyebrow}</p>
+      <h1 id="hero-t" set:html={rich(hero.title)} />
+      <p class="lead">{hero.lead}</p>
+      <div class="ctas">
+        <a class="btn btn-y" href="#contatti">{hero.ctaPrimary}</a>
+        <a class="btn btn-o" href="#metodo">{hero.ctaSecondary}</a>
+      </div>
+    </div>
+    <div class="logo-wrap" aria-hidden="true">
+      <span class="glow"></span>
+      <img src="/logo.svg" alt="" width="420" height="420" />
+    </div>
+  </div>
+</section>
+
+<div class="sectors band">
+  <div class="wrap sectors-in">
+    <b>Lavoriamo con</b>
+    {sectors.map((s) => <span>{s}</span>)}
+  </div>
+</div>
+
+<style>
+  .hero { background: var(--azzurro); overflow: hidden; }
+  .hero-in {
+    display: grid; grid-template-columns: 1.25fr .9fr; gap: 40px; align-items: center;
+    padding-block: clamp(48px, 8vw, 110px) clamp(48px, 7vw, 96px);
+  }
+  h1 { font-size: clamp(2.6rem, 6.4vw, 5.4rem); line-height: .98; letter-spacing: -.03em; }
+  h1 :global(.it) { font-weight: 600; }
+  .eyebrow { margin-bottom: 22px; display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before {
+    content: ''; flex: none; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--giallo); box-shadow: 0 0 10px 2px rgba(253, 214, 49, .9);
+  }
+  .lead { max-width: 34em; font-size: clamp(1.05rem, 1.6vw, 1.22rem); margin-top: 26px; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+  /* Logo: cresce sul posto, poi galleggia piano (come la pagina "in arrivo") */
+  .logo-wrap { position: relative; width: min(420px, 100%); justify-self: center; }
+  .logo-wrap img {
+    position: relative; width: 100%;
+    scale: 0;
+    animation:
+      grow 2s cubic-bezier(.22, 1, .36, 1) .2s forwards,
+      bob 5.5s ease-in-out 2.2s infinite alternate both,
+      sway 8s ease-in-out .2s infinite alternate both;
+  }
+  .glow {
+    position: absolute; right: -4%; top: 34%; width: 34%; aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle, rgba(253, 214, 49, .75) 0, rgba(253, 214, 49, .2) 40%, rgba(253, 214, 49, 0) 70%);
+    opacity: 0;
+    animation: glowIn .8s ease-out 1.4s forwards, pulse 3.6s ease-in-out 2.2s infinite;
+  }
+  @keyframes grow { to { scale: 1; } }
+  @keyframes bob { from { translate: 0 0; } to { translate: 4px -8px; } }
+  @keyframes sway { from { rotate: -3deg; } to { rotate: 3deg; } }
+  @keyframes glowIn { to { opacity: 1; } }
+  @keyframes pulse { 50% { transform: scale(.8); } }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-wrap img, .glow { animation: none; scale: 1; opacity: 1; }
+  }
+  @media (max-width: 820px) {
+    .hero-in { grid-template-columns: 1fr; }
+    .logo-wrap { width: min(240px, 64%); order: -1; justify-self: start; }
+  }
+
+  .sectors { background: var(--crema); border-bottom: 1px solid var(--line); }
+  .sectors-in {
+    display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center;
+    padding-block: 20px; font-size: .98rem;
+  }
+  .sectors span { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+  .sectors span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--giallo); }
+</style>

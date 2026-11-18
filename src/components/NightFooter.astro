@@ -1,0 +1,75 @@
+---
+import { rich } from '../lib/text';
+import type { Home, SiteSettings } from '../lib/types';
+
+interface Props { night: Home['night']; settings: SiteSettings; showProjects: boolean }
+const { night, settings, showProjects } = Astro.props;
+const year = new Date().getFullYear();
+const legal = [settings.legalName, settings.vatNumber && `P.IVA ${settings.vatNumber}`].filter(Boolean).join(' · ');
+---
+<div class="night band" data-night>
+  <canvas aria-hidden="true"></canvas>
+
+  <section class="wrap closing" aria-labelledby="nt-t">
+    <h2 id="nt-t" set:html={rich(night.title)} />
+    <p>{night.text}</p>
+    <a class="btn btn-y" href="#contatti">{night.cta}</a>
+  </section>
+
+  <footer class="wrap">
+    <div class="f-top">
+      <div class="f-brand">
+        <img src="/logo.svg" alt="" width="64" height="64" />
+        <span class="pay">{settings.payoff}</span>
+      </div>
+      <nav aria-label="Menu del footer">
+        <a href="#metodo">Come pensiamo</a>
+        <a href="#servizi">Servizi</a>
+        {showProjects && <a href="#progetti">Progetti</a>}
+        <a href="#team">Chi siamo</a>
+        <a href="#contatti">Contatti</a>
+        <a href={`https://www.instagram.com/${settings.instagram}`} target="_blank" rel="noopener">Instagram</a>
+      </nav>
+    </div>
+    <div class="f-bot">
+      <span>© {year} {settings.name}{legal && ` · ${legal}`} · <a href={`mailto:${settings.email}`}>{settings.email}</a></span>
+      <span>Questo sito non usa cookie.</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  import { initFireflies } from '../scripts/fireflies';
+  const area = document.querySelector<HTMLElement>('[data-night]');
+  const canvas = area?.querySelector('canvas');
+  if (area && canvas) initFireflies(canvas, area);
+</script>
+
+<style>
+  .night {
+    position: relative; overflow: hidden; color: var(--crema);
+    background: linear-gradient(180deg, #070c22 0%, #0e1a44 55%, #24345f 100%);
+  }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .closing, footer { position: relative; }
+  .closing {
+    padding-block: clamp(100px, 15vw, 190px) clamp(70px, 10vw, 120px);
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 28px;
+  }
+  h2 {
+    font: 400 clamp(3rem, 8vw, 6.6rem)/1.02 'ivybodoni-condensed', var(--f-serif);
+    letter-spacing: 0; max-width: 11em;
+  }
+  h2 :global(.it) { font-weight: 600; font-size: 1em; }
+  .closing p { color: #c9d3ea; max-width: 30em; font-size: 1.12rem; }
+
+  footer { padding-block: 32px 28px; display: grid; gap: 24px; border-top: 1px solid rgba(255, 255, 255, .12); color: #c9d3ea; }
+  .f-top { display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; }
+  .f-brand { display: flex; align-items: center; gap: 14px; }
+  .pay { font: italic 400 1.4rem var(--f-serif); color: var(--crema); }
+  nav { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+  nav a { text-decoration: none; font-weight: 600; padding: 6px 0; }
+  nav a:hover { color: var(--giallo); }
+  .f-bot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: .88rem; }
+  footer :focus-visible, .closing :focus-visible { outline-color: var(--giallo); }
+</style>

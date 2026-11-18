@@ -1,0 +1,48 @@
+---
+import { rich } from '../lib/text';
+import type { Home } from '../lib/types';
+
+interface Props { steps: Home['steps'] }
+const { steps } = Astro.props;
+---
+<section class="how blk band" aria-labelledby="how-t">
+  <div class="wrap">
+    <div class="head-row">
+      <h2 id="how-t" set:html={rich(steps.title)} />
+      <p>{steps.text}</p>
+    </div>
+    <ol class="steps">
+      {steps.items.map((s) => (
+        <li>
+          <span class="eyebrow">{s.label}</span>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </li>
+      ))}
+    </ol>
+    <div class="cta-row"><a class="btn btn-ink" href="#contatti">{steps.cta}</a></div>
+  </div>
+</section>
+
+<style>
+  .how { background: var(--azzurro); }
+  .how .head-row > p { color: var(--ink); }
+  .steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px;
+    position: relative; list-style: none; padding: 0; margin: 0;
+  }
+  .steps::before {
+    content: ''; position: absolute; left: 8px; right: 8px; top: 8px; height: 2px;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 6px, transparent 6px 12px); opacity: .35;
+  }
+  li { position: relative; padding-top: 38px; min-width: 0; }
+  li::before {
+    content: ''; position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--giallo); border: 2px solid var(--ink); box-shadow: 0 0 14px 3px rgba(253, 214, 49, .8);
+  }
+  .eyebrow { font-size: .68rem; color: var(--ink-soft); }
+  h3 { margin: 8px 0; font-size: 1.45rem; }
+  .cta-row { margin-top: 48px; }
+  @media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; gap: 36px 24px; } .steps::before { display: none; } }
+  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+</style>

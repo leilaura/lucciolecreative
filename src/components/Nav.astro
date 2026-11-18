@@ -1,0 +1,63 @@
+---
+interface Props {
+  name: string;
+  payoff: string;
+  showProjects: boolean;
+}
+const { name, payoff, showProjects } = Astro.props;
+const links = [
+  { href: '#metodo', label: 'Come pensiamo' },
+  { href: '#servizi', label: 'Servizi' },
+  ...(showProjects ? [{ href: '#progetti', label: 'Progetti' }] : []),
+  { href: '#team', label: 'Chi siamo' },
+  { href: '#contatti', label: 'Contatti' },
+];
+---
+<header class="nav band">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label={`${name}, torna all'inizio`}>
+      <img src="/logo.svg" alt="" width="52" height="52" />
+      <span class="brand-txt">
+        <span class="brand-name">{name}</span>
+        <span class="brand-pay">{payoff}</span>
+      </span>
+    </a>
+    <nav aria-label="Menu principale">
+      <ul>
+        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+    <a class="btn btn-ink" href="#contatti">Prenota una call</a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--azzurro);
+    border-bottom: 1px solid rgba(27, 38, 69, .12);
+  }
+  .wrap { display: flex; align-items: center; gap: 20px; padding-block: 12px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
+  .brand img { width: 52px; height: 52px; flex: none; }
+  .brand-txt { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
+  .brand-name { font: 700 1.05rem var(--f-display); letter-spacing: -.01em; }
+  .brand-pay {
+    font: italic 400 1rem var(--f-serif); color: var(--ink-soft);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  nav { margin-left: auto; }
+  ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  ul a {
+    display: block; padding: .55em .85em; border-radius: 999px;
+    text-decoration: none; font-weight: 600; font-size: .95rem; position: relative;
+  }
+  ul a:hover { background: rgba(255, 255, 255, .4); }
+  ul a:hover::after {
+    content: ''; position: absolute; left: 50%; bottom: 3px; width: 6px; height: 6px; margin-left: -3px;
+    border-radius: 50%; background: var(--giallo); box-shadow: 0 0 6px var(--giallo);
+  }
+  .btn { min-height: 44px; padding: .7em 1.1em; font-size: .92rem; }
+  @media (max-width: 1040px) { .brand-pay { display: none; } }
+  @media (max-width: 900px) { nav { display: none; } .btn { margin-left: auto; } }
+</style>
