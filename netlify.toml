@@ -1,0 +1,14 @@
+# Staging su Netlify (progetto lucciolecreative-staging, branch "website").
+# Il sito pubblico resta su GitHub Pages: lì questo file viene ignorato.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Lo staging non deve finire su Google
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
