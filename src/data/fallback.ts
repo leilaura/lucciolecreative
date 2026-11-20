@@ -25,8 +25,6 @@ export const fallback: SiteContent = {
       ctaSecondary: 'Come lavoriamo',
     },
 
-    sectors: ['artigiani', 'ristoranti e bar', 'negozi', 'studi professionali', 'aziende di produzione'],
-
     need: {
       eyebrow: 'Il bisogno',
       title: "Quando il valore c'è, *ma non si vede.*",

@@ -26,7 +26,6 @@ export interface Home {
     ctaPrimary: string;
     ctaSecondary: string;
   };
-  sectors: string[];
   need: {
     eyebrow: string;
     title: string;

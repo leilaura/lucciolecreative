@@ -2,14 +2,16 @@
 import { rich } from '../lib/text';
 import type { Home } from '../lib/types';
 
-interface Props { hero: Home['hero']; sectors: string[] }
-const { hero, sectors } = Astro.props;
+interface Props { hero: Home['hero'] }
+const { hero } = Astro.props;
 ---
 <section class="hero band" aria-labelledby="hero-t">
   <div class="wrap hero-in">
     <div>
-      <p class="eyebrow">{hero.eyebrow}</p>
-      <h1 id="hero-t" set:html={rich(hero.title)} />
+      <h1 id="hero-t">
+        {hero.eyebrow && <span class="eyebrow">{hero.eyebrow}</span>}
+        <span class="title" set:html={rich(hero.title)} />
+      </h1>
       <p class="lead">{hero.lead}</p>
       <div class="ctas">
         <a class="btn btn-y" href="#contatti">{hero.ctaPrimary}</a>
@@ -23,13 +25,6 @@ const { hero, sectors } = Astro.props;
   </div>
 </section>
 
-<div class="sectors band">
-  <div class="wrap sectors-in">
-    <b>Lavoriamo con</b>
-    {sectors.map((s) => <span>{s}</span>)}
-  </div>
-</div>
-
 <style>
   .hero { background: var(--azzurro); overflow: hidden; }
   .hero-in {
@@ -38,8 +33,13 @@ const { hero, sectors } = Astro.props;
   }
   h1 { font-size: clamp(2.6rem, 6.4vw, 5.4rem); line-height: .98; letter-spacing: -.03em; }
   h1 :global(.it) { font-weight: 600; }
-  .eyebrow { margin-bottom: 22px; display: flex; align-items: center; gap: 10px; }
-  .eyebrow::before {
+  /* L'eyebrow è la prima riga dell'h1: piccola, Montserrat, con la lucina davanti */
+  h1 .eyebrow {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 22px;
+    line-height: 1.4; letter-spacing: .16em; color: var(--ink);
+  }
+  h1 .title { display: block; }
+  h1 .eyebrow::before {
     content: ''; flex: none; width: 9px; height: 9px; border-radius: 50%;
     background: var(--giallo); box-shadow: 0 0 10px 2px rgba(253, 214, 49, .9);
   }
@@ -75,11 +75,4 @@ const { hero, sectors } = Astro.props;
     .logo-wrap { width: min(240px, 64%); order: -1; justify-self: start; }
   }
 
-  .sectors { background: var(--crema); border-bottom: 1px solid var(--line); }
-  .sectors-in {
-    display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center;
-    padding-block: 20px; font-size: .98rem;
-  }
-  .sectors span { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-soft); }
-  .sectors span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--giallo); }
 </style>

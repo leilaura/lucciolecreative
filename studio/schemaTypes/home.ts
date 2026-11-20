@@ -21,19 +21,12 @@ export const home = defineType({
       type: 'object',
       group: 'apertura',
       fields: [
-        str('eyebrow', 'Riga sopra il titolo'),
+        str('eyebrow', 'Prima riga del titolo (piccola, con la lucina)'),
         accentTitle('title', 'Titolo'),
         text('lead', 'Testo'),
         str('ctaPrimary', 'Bottone principale'),
         str('ctaSecondary', 'Bottone secondario'),
       ],
-    }),
-    defineField({
-      name: 'sectors',
-      title: 'Settori ("Lavoriamo con")',
-      type: 'array',
-      group: 'apertura',
-      of: [defineArrayMember({ type: 'string' })],
     }),
 
     defineField({

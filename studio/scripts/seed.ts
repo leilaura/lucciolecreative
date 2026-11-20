@@ -43,7 +43,6 @@ async function run() {
     _id: 'home',
     _type: 'home',
     hero: home.hero,
-    sectors: home.sectors,
     need: {
       ...home.need,
       image: await image(home.need.image),

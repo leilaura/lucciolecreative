@@ -39,6 +39,8 @@ const QUERY = `{
 let cache: Promise<SiteContent> | undefined;
 
 export function getContent(): Promise<SiteContent> {
+  // In sviluppo (npm run dev) rilegge Sanity a ogni ricarica, così le modifiche pubblicate si vedono subito.
+  if (import.meta.env.DEV) return load();
   cache ??= load();
   return cache;
 }
