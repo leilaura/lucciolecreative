@@ -21,8 +21,7 @@ export const home = defineType({
       type: 'object',
       group: 'apertura',
       fields: [
-        str('eyebrow', 'Prima riga del titolo (piccola, con la lucina)'),
-        accentTitle('title', 'Titolo'),
+        defineField({ name: 'title', title: 'Titolo', type: 'string', validation: (r) => r.required(), description: 'Metti tra *asterischi* le parole in corsivo. Il punto finale diventa la lucina gialla.' }),
         text('lead', 'Testo'),
         str('ctaPrimary', 'Bottone principale'),
         str('ctaSecondary', 'Bottone secondario'),

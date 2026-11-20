@@ -20,7 +20,6 @@ export interface SiteSettings {
 
 export interface Home {
   hero: {
-    eyebrow: string;
     title: string;
     lead: string;
     ctaPrimary: string;

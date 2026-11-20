@@ -17,7 +17,6 @@ export const fallback: SiteContent = {
 
   home: {
     hero: {
-      eyebrow: 'Federica, Jessica e Laura · comunicazione su misura',
       title: 'Tu sai quanto vale quello che fai. Noi lo facciamo vedere *anche da lontano*.',
       lead:
         'Siamo un piccolo team: troviamo parole, immagini e siti per raccontare ciò che rende unico il tuo lavoro. Per le PMI e per chi non ha ancora nessuno che segua la sua comunicazione.',

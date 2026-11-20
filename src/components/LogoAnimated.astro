@@ -58,7 +58,7 @@ const letters = [...logoRaw.matchAll(/<path id="\w+" class="cls-2" d="([^"]+)"\/
 </script>
 
 <style>
-  .logo-anim { width: min(420px, 100%); justify-self: center; }
+  .logo-anim { width: min(460px, 100%); justify-self: center; }
   svg { display: block; width: 100%; height: auto; overflow: visible; }
   .letter, .dotg { transform-box: fill-box; transform-origin: center; }
   /* Con JS attivo le lettere partono nascoste (niente lampo del logo completo prima dell'animazione) */
@@ -67,6 +67,6 @@ const letters = [...logoRaw.matchAll(/<path id="\w+" class="cls-2" d="([^"]+)"\/
     :global(.js) .letter, :global(.js) .dotg { opacity: 1; }
   }
   @media (max-width: 820px) {
-    .logo-anim { width: min(240px, 64%); order: -1; justify-self: start; }
+    .logo-anim { width: min(220px, 56%); order: -1; justify-self: start; }
   }
 </style>
