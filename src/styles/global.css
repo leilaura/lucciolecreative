@@ -72,11 +72,11 @@ h1, h2, h3, h4 {
 h2 { font-size: clamp(2.1rem, 4.4vw, 3.4rem); }
 h3 { font-size: 1.35rem; letter-spacing: -.01em; line-height: 1.15; }
 
-/* Il corsivo del brand: IvyBodoni */
+/* Il corsivo del brand: IvyBodoni. Semibold: le aste sottili del regular spariscono accanto ad Acumin bold */
 .it {
   font-family: var(--f-serif);
   font-style: italic;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0;
   font-size: 1.06em;
 }
