@@ -52,7 +52,7 @@ export interface Home {
     cta: string;
   };
   projects: { title: string };
-  team: { title: string; text: string; together: string };
+  team: { title: string; text: string };
   faq: { title: string };
   contact: { title: string; text: string; writeTitle: string; writeText: string };
   night: { title: string; text: string; cta: string };

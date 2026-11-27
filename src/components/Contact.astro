@@ -5,14 +5,24 @@ import type { Home, SiteSettings } from '../lib/types';
 interface Props { contact: Home['contact']; settings: SiteSettings }
 const { contact, settings } = Astro.props;
 const wa = settings.whatsapp?.replace(/[^\d]/g, '');
+// Dal link Cal.com (es. https://cal.com/lucciolecreative/call) ricaviamo origine e percorso per l'embed
+const cal = (() => {
+  try {
+    const u = new URL(settings.bookingUrl!);
+    return { origin: u.origin, link: u.pathname.replace(/^\/|\/$/g, '') };
+  } catch { return null; }
+})();
 ---
 <section class="contact blk band" id="contatti" aria-labelledby="ct-t">
   <div class="wrap">
     <div class="booking">
       <h2 id="ct-t" set:html={rich(contact.title)} />
       <p class="sub">{contact.text}</p>
-      {settings.bookingUrl ? (
-        <a class="btn btn-y" href={settings.bookingUrl} target="_blank" rel="noopener">Scegli giorno e orario</a>
+      {cal ? (
+        <div class="cal" data-cal data-origin={cal.origin} data-link={cal.link}>
+          <!-- Finché il calendario non è caricato (o senza JavaScript) resta il link -->
+          <a class="btn btn-y cal-fallback" href={settings.bookingUrl} target="_blank" rel="noopener">Scegli giorno e orario</a>
+        </div>
       ) : (
         <p class="todo">Qui andrà il calendario di prenotazione (Cal.com). Il link si inserisce in Sanity, in Impostazioni.</p>
       )}
@@ -31,12 +41,56 @@ const wa = settings.whatsapp?.replace(/[^\d]/g, '');
   </div>
 </section>
 
+<script>
+  // Calendario Cal.com dentro la pagina. Lo carichiamo solo quando la sezione si avvicina,
+  // così chi non arriva fin qui non scarica lo script di Cal.com.
+  const box = document.querySelector<HTMLElement>('[data-cal]');
+  if (box) {
+    const { origin, link } = box.dataset as { origin: string; link: string };
+    const start = () => {
+      // Snippet ufficiale di Cal.com (mette in coda i comandi finché embed.js non è pronto)
+      const w = window as any;
+      (function (C: any, A: string, L: string) {
+        const p = (a: any, ar: any) => a.q.push(ar);
+        const d = C.document;
+        C.Cal = C.Cal || function () {
+          const cal = C.Cal; const ar = arguments;
+          if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+          if (ar[0] === L) {
+            const api: any = function () { p(api, arguments); };
+            const ns = ar[1]; api.q = api.q || [];
+            if (typeof ns === 'string') { cal.ns[ns] = cal.ns[ns] || api; p(cal.ns[ns], ar); p(cal, ['initNamespace', ns]); } else p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+      })(w, `${origin === 'https://cal.com' ? 'https://app.cal.com' : origin}/embed/embed.js`, 'init');
+      w.Cal('init', 'lucciole', { origin });
+      w.Cal.ns.lucciole('inline', { elementOrSelector: box, calLink: link, config: { layout: 'month_view' } });
+      w.Cal.ns.lucciole('ui', {
+        // Senza la colonna con i dettagli dell'evento: il calendario è molto più compatto
+        theme: 'light', hideEventTypeDetails: true, layout: 'month_view',
+        cssVarsPerTheme: { light: { 'cal-brand': '#1b2645' } },
+      });
+      box.classList.add('loaded');
+    };
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); start(); } }, { rootMargin: '600px 0px' });
+      io.observe(box);
+    } else start();
+  }
+</script>
+
 <style>
   .contact { background: var(--azzurro); }
   .wrap { display: grid; grid-template-columns: 1.3fr .9fr; gap: 24px; align-items: start; }
   .booking { background: var(--crema); border-radius: calc(var(--r) + 6px); padding: clamp(22px, 3vw, 36px); min-width: 0; }
   .booking h2 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); }
   .sub { color: var(--ink-soft); margin: 10px 0 22px; }
+  /* Box del calendario più piccolo: Cal.com si adatta alla larghezza che gli diamo */
+  .cal { min-height: 120px; max-width: 440px; }
+  .cal.loaded { min-height: 380px; }
+  .cal.loaded .cal-fallback { display: none; }
   .todo { border: 2px dashed var(--line); border-radius: 12px; padding: 14px 16px; font-size: .95rem; color: var(--ink-soft); }
   .write { display: flex; flex-direction: column; gap: 12px; padding-top: 8px; }
   .write h3 { font-size: 1.6rem; margin-bottom: 6px; }

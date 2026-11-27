@@ -148,8 +148,6 @@ export const fallback: SiteContent = {
     team: {
       title: 'Tre professioniste, *una sola luce* sul tuo progetto.',
       text: 'Lavoravamo già con le piccole imprese, ognuna nel suo mestiere. Ora lo facciamo insieme: tre punti di vista sullo stesso progetto, con la stessa cura.',
-      together:
-        'Un team piccolo per scelta: *chi ti ascolta è chi lavora davvero al tuo progetto.* Nessun passaggio di mano, nessuna ripartenza da zero.',
     },
 
     faq: { title: 'Domande *frequenti.*' },

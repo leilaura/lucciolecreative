@@ -25,7 +25,6 @@ const { intro, team } = Astro.props;
         </article>
       ))}
     </div>
-    <p class="together" set:html={rich(intro.together)} />
   </div>
 </section>
 
@@ -52,7 +51,5 @@ const { intro, team } = Astro.props;
   .skills { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 4px 0 0; }
   .skills li { font-size: .82rem; font-weight: 600; background: var(--azzurro-pale); border-radius: 999px; padding: .3em .75em; }
   blockquote { margin: 6px 0 0; padding-top: 14px; border-top: 1px solid var(--line); font: italic 600 1.2rem/1.3 var(--f-serif); }
-  .together { margin-top: 18px; background: var(--ink); color: var(--crema); border-radius: var(--r); padding: 22px 28px; font-size: 1.1rem; }
-  .together :global(.it) { color: var(--giallo); }
   @media (max-width: 860px) { .people { grid-template-columns: 1fr; } }
 </style>

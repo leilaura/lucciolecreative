@@ -152,7 +152,7 @@ export const home = defineType({
       title: 'Introduzione Team',
       type: 'object',
       group: 'sezioni',
-      fields: [accentTitle('title', 'Titolo'), text('text', 'Testo'), accentTitle('together', 'Frase finale (riquadro blu)')],
+      fields: [accentTitle('title', 'Titolo'), text('text', 'Testo')],
     }),
     defineField({
       name: 'faq',
