@@ -56,6 +56,9 @@ const links = [
     position: absolute; top: 0; left: 0; right: 0; z-index: 50;
     background: transparent;
   }
+  /* Sopra il cielo scuro dell'hero il testo del menu è chiaro */
+  .nav:not(.is-stuck) { color: var(--crema); }
+  .nav:not(.is-stuck) ul a:hover { background: rgba(255, 255, 255, .14); }
   .nav.is-stuck {
     position: fixed;
     background: #b9cdee; border-bottom: 1px solid rgba(27, 38, 69, .08);

@@ -8,3 +8,4 @@ dist/
 !.env.example
 studio/dist/
 studio/.sanity/
+_to_delete/

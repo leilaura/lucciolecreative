@@ -1,6 +1,7 @@
 ---
 import { rich } from '../lib/text';
 import type { Home } from '../lib/types';
+import finestre from '../data/finestre.json';
 
 interface Props { hero: Home['hero'] }
 const { hero } = Astro.props;
@@ -13,7 +14,9 @@ const flies = [
   [12, 50, 5, 16], [55, 8, 5, 13],
 ];
 ---
-<section class="hero band v-azzurro" aria-labelledby="hero-t" data-hero>
+<section class="hero band" aria-labelledby="hero-t" data-hero>
+  <!-- Il paese al tramonto: si parte con le finestre spente e si accendono una alla volta -->
+  <canvas class="town" aria-hidden="true" data-town data-windows={JSON.stringify(finestre)}></canvas>
   <div class="sky" aria-hidden="true">
     {flies.map(([x, y, s, d], i) => (
       <span class="fly" style={`--x:${x}%;--y:${y}%;--s:${s}px;--d:${d}s;--o:${-i * 1.7}s`}></span>
@@ -29,18 +32,64 @@ const flies = [
   </div>
 </section>
 
+<script>
+  // Disegna il paese "spento" e accende le finestre una per una, sopra, ritagliandole dalla versione accesa.
+  // L'immagine copre l'hero come background-size: cover, ancorata in basso.
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-town]');
+  if (canvas) {
+    const data = JSON.parse(canvas.dataset.windows!) as { w: number; h: number; windows: [number, number, number, number][] };
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const load = (src: string) => new Promise<HTMLImageElement>((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; });
+    // Ogni quanto parte una finestra, quanto dura la sua accensione e l'attesa iniziale (millisecondi)
+    const STEP = 140, FADE = 1200, DELAY = 700; // 52 finestre: circa 9 secondi in tutto
+    let start = 0;
+    Promise.all([load('/images/paese-spento.webp'), load('/images/paese-acceso.webp')]).then(([off, on]) => {
+      const ctx = canvas.getContext('2d')!;
+      const draw = (now: number) => {
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        const cw = canvas.clientWidth, ch = canvas.clientHeight;
+        if (canvas.width !== Math.round(cw * dpr) || canvas.height !== Math.round(ch * dpr)) {
+          canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
+        }
+        const s = Math.max(cw / data.w, ch / data.h);
+        const dx = (cw - data.w * s) / 2, dy = ch - data.h * s;
+        ctx.setTransform(dpr * s, 0, 0, dpr * s, dpr * dx, dpr * dy);
+        ctx.globalAlpha = 1;
+        ctx.drawImage(off, 0, 0, data.w, data.h);
+        let done = true;
+        data.windows.forEach(([x, y, w, h], i) => {
+          const a = reduce ? 1 : Math.min(1, Math.max(0, (now - start - i * STEP) / FADE));
+          if (a < 1) done = false;
+          if (a > 0) { ctx.globalAlpha = a; ctx.drawImage(on, x, y, w, h, x, y, w, h); }
+        });
+        return done;
+      };
+      canvas.classList.add('ready');
+      start = performance.now() + DELAY;
+      const loop = (t: number) => { if (!draw(t)) requestAnimationFrame(loop); };
+      requestAnimationFrame(loop);
+      addEventListener('resize', () => draw(performance.now()));
+    }).catch(() => {});
+  }
+</script>
 
 <style>
   .hero {
     position: relative; overflow: hidden; isolation: isolate;
   }
-  /* Cielo al crepuscolo: il testo sta nel cielo, prato e orizzonte restano sotto i bottoni */
-  .v-azzurro { background: #a9bfe6 url('/images/hero-cielo.webp') center bottom / cover no-repeat; }
-  .v-azzurro .lead { color: var(--ink); }
+  /* Il paese al tramonto: il testo sta nel cielo, le case sotto i bottoni.
+     Senza JavaScript si vede la foto con le luci accese. */
+  .hero { color: var(--crema); background: #22396f url('/images/paese-acceso.webp') center bottom / cover no-repeat; }
+  :global(.js) .hero { background-image: url('/images/paese-spento.webp'); }
+  .town { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; opacity: 0; }
+  .town:global(.ready) { opacity: 1; }
+  .lead { color: #e4e9f6; text-shadow: 0 1px 14px rgba(15, 25, 60, .55); }
+  .hero .btn-o { color: var(--crema); box-shadow: inset 0 0 0 1.5px var(--crema); }
+  .hero .btn-o:hover { background: var(--crema); color: var(--ink); }
   .hero-in {
     position: relative; display: flex; flex-direction: column; align-items: center; text-align: center;
     /* sopra c'è il menu trasparente (circa 90px) */
-    padding-block: calc(90px + clamp(48px, 7vw, 100px)) clamp(150px, 13vw, 210px);
+    padding-block: calc(90px + clamp(40px, 5vw, 80px)) clamp(280px, 24vw, 380px);
   }
   h1 { font-size: clamp(2.4rem, 5.2vw, 4.6rem); line-height: 1.02; letter-spacing: -.03em; max-width: 13.5em; }
   h1 :global(.it) { font-weight: 700; }
@@ -51,7 +100,7 @@ const flies = [
     animation: lucina 3.2s ease-in-out 1s infinite;
   }
   @keyframes lucina { 50% { box-shadow: 0 0 .08em .02em rgba(253, 214, 49, .8), 0 0 .3em .08em rgba(253, 214, 49, .3); } }
-  .lead { max-width: 34em; font-size: clamp(1.05rem, 1.4vw, 1.2rem); margin-top: 24px; color: var(--ink-soft); }
+  .lead { max-width: 34em; font-size: clamp(1.05rem, 1.4vw, 1.2rem); margin-top: 24px; }
   .ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
 
   /* Lucciole piccole che vagano e si accendono */
