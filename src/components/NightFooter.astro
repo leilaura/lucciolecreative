@@ -19,21 +19,13 @@ const legal = [settings.legalName, settings.vatNumber && `P.IVA ${settings.vatNu
   <footer class="wrap">
     <div class="f-top">
       <div class="f-brand">
-        <img src="/logo.svg" alt="" width="64" height="64" />
-        <span class="pay">{settings.payoff}</span>
+        <img src="/logo.svg" alt="" width="36" height="36" />
+        <span>© {year} {settings.name}{legal && ` · ${legal}`} · <a href={`mailto:${settings.email}`}>{settings.email}</a></span>
       </div>
-      <nav aria-label="Menu del footer">
-        <a href="#metodo">Come pensiamo</a>
-        <a href="#servizi">Servizi</a>
-        {showProjects && <a href="#progetti">Progetti</a>}
-        <a href="#team">Chi siamo</a>
-        <a href="#contatti">Contatti</a>
-        <a href={`https://www.instagram.com/${settings.instagram}`} target="_blank" rel="noopener">Instagram</a>
-      </nav>
-    </div>
-    <div class="f-bot">
-      <span>© {year} {settings.name}{legal && ` · ${legal}`} · <a href={`mailto:${settings.email}`}>{settings.email}</a></span>
-      <span>Questo sito non usa cookie.</span>
+      <ul class="f-links">
+        <li><a href={`https://www.instagram.com/${settings.instagram}`} target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+      </ul>
     </div>
   </footer>
 </div>
@@ -53,7 +45,7 @@ const legal = [settings.legalName, settings.vatNumber && `P.IVA ${settings.vatNu
   canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .closing, footer { position: relative; }
   .closing {
-    padding-block: clamp(100px, 15vw, 190px) clamp(70px, 10vw, 120px);
+    padding-block: clamp(100px, 15vw, 140px) clamp(70px, 10vw, 120px);
     display: flex; flex-direction: column; align-items: center; text-align: center; gap: 28px;
   }
   h2 {
@@ -64,12 +56,13 @@ const legal = [settings.legalName, settings.vatNumber && `P.IVA ${settings.vatNu
   .closing p { color: #c9d3ea; max-width: 30em; font-size: 1.12rem; }
 
   footer { padding-block: 32px 28px; display: grid; gap: 24px; border-top: 1px solid rgba(255, 255, 255, .12); color: #c9d3ea; }
-  .f-top { display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; }
-  .f-brand { display: flex; align-items: center; gap: 14px; }
+  .f-top { font-size: .85rem; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; }
+  .f-brand { display: flex; align-items: center; gap: 12px; }
+  .f-brand img { width: 36px; height: 36px; flex: none; }
   .pay { font: italic 600 1.4rem var(--f-serif); color: var(--crema); }
-  nav { display: flex; flex-wrap: wrap; gap: 6px 20px; }
-  nav a { text-decoration: none; font-weight: 600; padding: 6px 0; }
-  nav a:hover { color: var(--giallo); }
+  .f-links { display: flex; gap: 6px 24px; list-style: none; margin: 0; padding: 0; }
+  .f-links a { text-decoration: none; font-weight: 600; padding: 6px 0; }
+  .f-links a:hover { color: var(--giallo); }
   .f-bot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: .88rem; }
   footer :focus-visible, .closing :focus-visible { outline-color: var(--giallo); }
 </style>

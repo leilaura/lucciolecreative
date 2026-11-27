@@ -1,0 +1,27 @@
+---
+// Pagina Privacy: per ora un segnaposto. Il testo vero va scritto (o generato con un servizio
+// come iubenda) prima del lancio, quando sarà chiaro quali dati raccoglie il sito.
+import Base from '../layouts/Base.astro';
+import { getContent } from '../lib/content';
+
+const { settings } = await getContent();
+---
+<Base title={`Privacy · ${settings.name}`} description={`Informativa sulla privacy di ${settings.name}.`}>
+  <main id="contenuto" class="band privacy">
+    <div class="wrap">
+      <a class="back" href="/">← Torna al sito</a>
+      <h1>Privacy</h1>
+      <p>L’informativa sulla privacy è in preparazione.</p>
+      <p>Per qualsiasi domanda sui tuoi dati scrivici a <a href={`mailto:${settings.email}`}>{settings.email}</a>.</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .privacy { padding-block: clamp(48px, 8vw, 96px); min-height: 70vh; }
+  .wrap { max-width: 42em; display: grid; gap: 18px; }
+  .back { font-weight: 600; text-decoration: none; color: var(--ink-soft); }
+  .back:hover { color: var(--ink); }
+  h1 { font-size: clamp(2.2rem, 4.4vw, 3.2rem); margin-top: 12px; }
+  p { color: var(--ink-soft); font-size: 1.08rem; }
+</style>
