@@ -13,13 +13,13 @@ const links = [
   { href: '#contatti', label: 'Contatti' },
 ];
 ---
-<header class="nav band">
+<div class="nav-slot" data-nav-slot>
+<header class="nav band" data-nav>
   <div class="wrap">
     <a class="brand" href="#top" aria-label={`${name}, torna all'inizio`}>
       <img src="/logo.svg" alt="" width="52" height="52" />
       <span class="brand-txt">
         <span class="brand-name">{name}</span>
-        <span class="brand-pay">{payoff}</span>
       </span>
     </a>
     <nav aria-label="Menu principale">
@@ -30,34 +30,56 @@ const links = [
     <a class="btn btn-ink" href="#contatti">Prenota una call</a>
   </div>
 </header>
+</div>
+
+<script>
+  // Il menu resta in cima e scorre via con la pagina.
+  // Finita la sezione azzurra (l'hero) riappare fisso in alto.
+  const slot = document.querySelector<HTMLElement>('[data-nav-slot]');
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (slot && nav && hero) {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      nav.classList.toggle('is-stuck', scrollY >= hero.offsetTop + hero.offsetHeight);
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
+</script>
 
 <style>
   .nav {
-    position: sticky; top: 0; z-index: 50;
-    background: var(--azzurro);
-    border-bottom: 1px solid rgba(27, 38, 69, .12);
+    /* In cima il menu è trasparente e sta sopra l'hero, così prende il suo sfondo */
+    position: absolute; top: 0; left: 0; right: 0; z-index: 50;
+    background: transparent;
+  }
+  .nav.is-stuck {
+    position: fixed;
+    background: #b9cdee; border-bottom: 1px solid rgba(27, 38, 69, .08);
+    box-shadow: 0 6px 20px -12px rgba(27, 38, 69, .35);
+    animation: nav-in .3s ease both;
+  }
+  @keyframes nav-in { from { translate: 0 -100%; } }
+  @media (prefers-reduced-motion: reduce) { .nav.is-stuck { animation: none; }
   }
   .wrap { display: flex; align-items: center; gap: 20px; padding-block: 12px; }
+  /* In cima, sopra l'hero, un po' più d'aria; quando è fisso torna compatto */
+  .nav:not(.is-stuck) .wrap { padding-top: 26px; }
   .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
   .brand img { width: 52px; height: 52px; flex: none; }
   .brand-txt { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
   .brand-name { font: 700 1.05rem var(--f-display); letter-spacing: -.01em; }
-  .brand-pay {
-    font: italic 600 1rem var(--f-serif); color: var(--ink-soft);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
   nav { margin-left: auto; }
   ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
   ul a {
-    display: block; padding: .55em .85em; border-radius: 999px;
+    display: block; padding: .55em .85em; border-radius: 12px;
     text-decoration: none; font-weight: 600; font-size: .95rem; position: relative;
   }
-  ul a:hover { background: rgba(255, 255, 255, .4); }
-  ul a:hover::after {
-    content: ''; position: absolute; left: 50%; bottom: 3px; width: 6px; height: 6px; margin-left: -3px;
-    border-radius: 50%; background: var(--giallo); box-shadow: 0 0 6px var(--giallo);
-  }
+  ul a { transition: background .2s; }
+  ul a:hover { background: rgba(255, 255, 255, .45); }
   .btn { min-height: 44px; padding: .7em 1.1em; font-size: .92rem; white-space: nowrap; flex: none; }
-  @media (max-width: 1040px) { .brand-pay { display: none; } }
   @media (max-width: 900px) { nav { display: none; } .btn { margin-left: auto; } }
 </style>

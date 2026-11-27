@@ -1,50 +1,76 @@
 ---
 import { rich } from '../lib/text';
-import LogoAnimated from './LogoAnimated.astro';
 import type { Home } from '../lib/types';
 
 interface Props { hero: Home['hero'] }
 const { hero } = Astro.props;
 // Il punto finale del titolo diventa la lucina gialla
 const title = hero.title.trim().replace(/\.$/, '');
+// Le lucciole del giorno: posizione, grandezza e ritmo diversi per ognuna
+const flies = [
+  [8, 22, 10, 9], [18, 70, 7, 12], [27, 38, 6, 10], [36, 84, 9, 14], [62, 16, 7, 11],
+  [71, 64, 11, 9], [80, 30, 6, 13], [88, 78, 8, 10], [93, 46, 10, 12], [50, 90, 6, 15],
+  [12, 50, 5, 16], [55, 8, 5, 13],
+];
 ---
-<section class="hero band" aria-labelledby="hero-t">
+<section class="hero band v-azzurro" aria-labelledby="hero-t" data-hero>
+  <div class="sky" aria-hidden="true">
+    {flies.map(([x, y, s, d], i) => (
+      <span class="fly" style={`--x:${x}%;--y:${y}%;--s:${s}px;--d:${d}s;--o:${-i * 1.7}s`}></span>
+    ))}
+  </div>
   <div class="wrap hero-in">
-    <div>
-      <h1 id="hero-t"><Fragment set:html={rich(title) + '&#8288;'} /><span class="lucina" aria-hidden="true"></span></h1>
-      <p class="lead">{hero.lead}</p>
-      <div class="ctas">
-        <a class="btn btn-y" href="#contatti">{hero.ctaPrimary}</a>
-        <a class="btn btn-o" href="#metodo">{hero.ctaSecondary}</a>
-      </div>
+    <h1 id="hero-t"><Fragment set:html={rich(title) + '&#8288;'} /><span class="lucina" aria-hidden="true"></span></h1>
+    <p class="lead">{hero.lead}</p>
+    <div class="ctas">
+      <a class="btn btn-y" href="#contatti">{hero.ctaPrimary}</a>
+      <a class="btn btn-o" href="#metodo">{hero.ctaSecondary}</a>
     </div>
-    <LogoAnimated />
   </div>
 </section>
 
+
 <style>
-  /* Hero azzurro: titolo a sinistra, logo grande a destra */
-  .hero { background: var(--azzurro); overflow: hidden; }
-  .hero-in {
-    display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center;
-    padding-block: clamp(40px, 6vw, 88px);
+  .hero {
+    position: relative; overflow: hidden; isolation: isolate;
   }
-  h1 { font-size: clamp(2.3rem, 4.4vw, 3.9rem); line-height: 1.02; letter-spacing: -.025em; max-width: 15em; }
+  /* Cielo al crepuscolo: il testo sta nel cielo, prato e orizzonte restano sotto i bottoni */
+  .v-azzurro { background: #a9bfe6 url('/images/hero-cielo.webp') center bottom / cover no-repeat; }
+  .v-azzurro .lead { color: var(--ink); }
+  .hero-in {
+    position: relative; display: flex; flex-direction: column; align-items: center; text-align: center;
+    /* sopra c'è il menu trasparente (circa 90px) */
+    padding-block: calc(90px + clamp(48px, 7vw, 100px)) clamp(150px, 13vw, 210px);
+  }
+  h1 { font-size: clamp(2.4rem, 5.2vw, 4.6rem); line-height: 1.02; letter-spacing: -.03em; max-width: 13.5em; }
   h1 :global(.it) { font-weight: 700; }
-  /* La lucina: il punto finale del titolo, giallo e acceso */
   .lucina {
     display: inline-block; width: .17em; height: .17em; margin-left: .06em; border-radius: 50%;
     background: var(--giallo); vertical-align: baseline;
-    box-shadow: 0 0 .12em .04em rgba(253, 214, 49, .9), 0 0 .5em .12em rgba(253, 214, 49, .45);
+    box-shadow: 0 0 .12em .05em rgba(253, 214, 49, 1), 0 0 .6em .2em rgba(253, 214, 49, .55);
     animation: lucina 3.2s ease-in-out 1s infinite;
   }
-  @keyframes lucina { 50% { box-shadow: 0 0 .08em .02em rgba(253, 214, 49, .7), 0 0 .28em .06em rgba(253, 214, 49, .25); } }
-  @media (prefers-reduced-motion: reduce) { .lucina { animation: none; } }
-  .lead { max-width: 36em; font-size: clamp(1.05rem, 1.4vw, 1.2rem); margin-top: 22px; }
-  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  @keyframes lucina { 50% { box-shadow: 0 0 .08em .02em rgba(253, 214, 49, .8), 0 0 .3em .08em rgba(253, 214, 49, .3); } }
+  .lead { max-width: 34em; font-size: clamp(1.05rem, 1.4vw, 1.2rem); margin-top: 24px; color: var(--ink-soft); }
+  .ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
 
-  @media (max-width: 820px) {
-    .hero-in { grid-template-columns: 1fr; }
+  /* Lucciole piccole che vagano e si accendono */
+  .sky { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .fly {
+    position: absolute; left: var(--x); top: var(--y); width: var(--s); height: var(--s); border-radius: 50%;
+    background: var(--giallo);
+    box-shadow: 0 0 calc(var(--s) * .8) calc(var(--s) * .2) rgba(253, 214, 49, .7);
+    animation: wander var(--d) ease-in-out var(--o) infinite alternate, blink calc(var(--d) * .45) ease-in-out var(--o) infinite;
   }
+  @keyframes wander {
+    0% { translate: 0 0; } 33% { translate: 28px -36px; } 66% { translate: -22px -14px; } 100% { translate: 16px 30px; }
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
 
+  @media (prefers-reduced-motion: reduce) {
+    .lucina, .fly { animation: none; }
+  }
+  @media (max-width: 820px) {
+    .fly:nth-child(n + 9) { display: none; }
+  }
 </style>

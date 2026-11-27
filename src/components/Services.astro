@@ -80,12 +80,15 @@ const { intro, services } = Astro.props;
 
 <style>
   .services { background: var(--crema); }
+  /* Qui il testo va sotto al titolo, non a destra */
+  .services .head-row { grid-template-columns: 1fr; gap: 16px; }
+  .services .head-row > p { max-width: 36em; }
   .svc { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
-  .tabs { display: flex; flex-direction: column; gap: 10px; grid-row: 1 / span 10; }
+  .tabs { display: flex; flex-direction: column; gap: 10px; grid-row: 1; }
   .tab {
     display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; text-align: left;
     font: 600 1.05rem var(--f-body); color: var(--ink); background: #fff;
-    border: 1.5px solid var(--line); border-radius: 999px; padding: .85em 1.2em; cursor: pointer;
+    border: 1.5px solid var(--line); border-radius: 16px; padding: .85em 1.2em; cursor: pointer;
     transition: border-color .15s, background .15s;
   }
   .tab::before {
@@ -97,7 +100,7 @@ const { intro, services } = Astro.props;
   .tab[aria-selected='true']::before { background: var(--giallo); box-shadow: 0 0 8px 2px rgba(253, 214, 49, .9); }
 
   .panel {
-    grid-column: 2; overflow: hidden; background: var(--azzurro-pale); border-radius: calc(var(--r) + 6px);
+    grid-column: 2; grid-row: 1; overflow: hidden; background: var(--azzurro-pale); border-radius: calc(var(--r) + 6px);
     display: grid; grid-template-columns: 1.1fr .9fr; min-width: 0;
   }
   .panel[hidden] { display: none; }
@@ -118,7 +121,7 @@ const { intro, services } = Astro.props;
     .svc { grid-template-columns: 1fr; }
     .tabs { flex-direction: row; flex-wrap: wrap; grid-row: auto; }
     .tab { width: auto; }
-    .panel { grid-column: 1; grid-template-columns: 1fr; }
+    .panel { grid-column: 1; grid-row: 2; grid-template-columns: 1fr; }
     .shot { min-height: 340px; }
   }
 </style>

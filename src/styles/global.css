@@ -94,18 +94,29 @@ h3 { font-size: 1.35rem; letter-spacing: -.01em; line-height: 1.15; }
   min-height: 48px;
   font: 700 1rem/1 var(--f-body);
   padding: .9em 1.4em;
-  border-radius: 999px;
+  border-radius: 16px;
   text-decoration: none;
-  border: 2px solid var(--ink);
+  border: 0;
   cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, background .15s, color .15s;
+  transition: box-shadow .2s ease, background-color .2s ease, color .2s ease;
+  /* Livello proprio e stabile: le lucciole animate che passano vicino non fanno
+     ricalcolare al browser il bottone, quindi il testo non scatta più */
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .btn-y { background: var(--giallo); color: var(--ink); }
-.btn-y:hover { box-shadow: 0 0 0 6px rgba(253, 214, 49, .35); transform: translateY(-1px); }
-.btn-o { background: transparent; color: var(--ink); }
+.btn-y:hover { box-shadow: 0 8px 24px -8px rgba(27, 38, 69, .35), 0 0 0 6px rgba(253, 214, 49, .3); }
+/* Il bordo del bottone vuoto è un'ombra interna: niente mezzi pixel che fanno scattare il testo */
+.btn-o { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
 .btn-o:hover { background: var(--ink); color: var(--crema); }
 .btn-ink { background: var(--ink); color: var(--crema); }
-.btn-ink:hover { background: var(--azzurro-deep); border-color: var(--azzurro-deep); }
+.btn-ink:hover { background: var(--azzurro-deep); }
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}
+
+/* Link nel testo: stessa transizione morbida */
+a { transition: color .2s ease, opacity .2s ease; }
 
 .head-row {
   display: grid; grid-template-columns: 1fr 1fr; gap: 24px 48px; align-items: end; margin-bottom: 48px;

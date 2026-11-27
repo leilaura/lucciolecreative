@@ -5,53 +5,78 @@ import type { Home } from '../lib/types';
 interface Props { need: Home['need'] }
 const { need } = Astro.props;
 ---
-<section class="pband band" aria-labelledby="need-t">
-  <div class="wrap pb-in">
-    <div class="pb-t">
+<section class="need blk band" aria-labelledby="need-t">
+  <div class="wrap need-in">
+    <div class="intro">
       <p class="eyebrow">{need.eyebrow}</p>
       <h2 id="need-t" set:html={rich(need.title)} />
       <p>{need.text}</p>
     </div>
-    <img class="pb-img" src={need.image.url} alt={need.image.alt} width="415" height="624" loading="lazy" />
-  </div>
-</section>
-
-<section class="familiar blk band" aria-label="Le situazioni in cui ci riconosci">
-  <div class="wrap">
-    <div class="quotes">
+    <div class="quotes" data-quotes>
       {need.quotes.map((q) => (
         <figure class="q">
-          <blockquote><p>{q.quote}</p></blockquote>
+          <span class="dot" aria-hidden="true"></span>
+          <blockquote><p>“{q.quote}”</p></blockquote>
           <figcaption><b>{q.label}</b> {q.text}</figcaption>
         </figure>
       ))}
     </div>
-    <div class="answer">
-      <h3 set:html={rich(need.answerTitle)} />
-      <p>{need.answerText}</p>
-    </div>
+  </div>
+  <div class="wrap answer">
+    <h3 set:html={rich(need.answerTitle)} />
+    <p>{need.answerText}</p>
   </div>
 </section>
 
-<style>
-  .familiar { background: var(--crema); }
-  .quotes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .q {
-    margin: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--r);
-    padding: 26px 22px 22px; display: flex; flex-direction: column; gap: 18px; min-width: 0;
+<script>
+  // Le frasi si "accendono" una alla volta mentre scorri
+  const box = document.querySelector('[data-quotes]');
+  if (box && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    box.classList.add('dim');
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+    }, { rootMargin: '0px 0px -35% 0px' });
+    box.querySelectorAll('.q').forEach((q) => io.observe(q));
   }
-  .q::before { content: '“'; font: italic 600 3.2rem/.6 var(--f-serif); color: var(--azzurro-deep); height: .4em; }
+</script>
+
+<style>
+  .need { background: var(--crema); }
+  .need-in { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+  .intro { position: sticky; top: 120px; display: grid; gap: 20px; }
+  .intro .eyebrow { color: var(--azzurro-deep); }
+  .intro h2 :global(.it) { color: var(--azzurro-deep); }
+  .intro > p:last-child { color: var(--ink-soft); font-size: 1.1rem; max-width: 30em; }
+
+  .quotes { display: grid; gap: 16px; }
+  .q {
+    position: relative; margin: 0; background: #fff; border: 1px solid var(--line); border-radius: calc(var(--r) + 4px);
+    padding: 28px 28px 24px 64px; display: grid; gap: 14px;
+    transition: opacity .7s ease, translate .7s cubic-bezier(.22, 1, .36, 1);
+  }
+  .dot {
+    position: absolute; left: 28px; top: 36px; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--giallo); box-shadow: 0 0 8px 3px rgba(253, 214, 49, .7);
+    transition: background .6s ease .2s, box-shadow .6s ease .2s;
+  }
+  :global(.dim) .q { opacity: .35; translate: 0 24px; }
+  :global(.dim) .q .dot { background: var(--line); box-shadow: none; }
+  :global(.dim) .q:global(.on) { opacity: 1; translate: 0 0; }
+  :global(.dim) .q:global(.on) .dot { background: var(--giallo); box-shadow: 0 0 8px 3px rgba(253, 214, 49, .7); }
   blockquote { margin: 0; }
-  blockquote p { font-family: var(--f-serif); font-weight: 600; font-size: 1.5rem; line-height: 1.14; }
-  figcaption { margin-top: auto; font-size: .9rem; color: var(--ink-soft); }
+  blockquote p { font: 700 clamp(1.25rem, 2vw, 1.6rem)/1.2 var(--f-display); letter-spacing: -.015em; }
+  figcaption { font-size: .95rem; color: var(--ink-soft); }
   figcaption b { color: var(--ink); }
+
   .answer {
-    margin-top: 48px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px 40px; align-items: center;
-    background: var(--ink); color: var(--crema); border-radius: calc(var(--r) + 6px); padding: clamp(28px, 4vw, 48px);
+    margin-top: clamp(56px, 7vw, 96px); display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px 40px; align-items: center;
+    background: var(--ink); color: var(--crema); border-radius: calc(var(--r) + 6px); padding: clamp(28px, 4vw, 52px);
   }
   .answer h3 { font-size: clamp(1.7rem, 3.4vw, 2.7rem); }
   .answer h3 :global(.it) { color: var(--giallo); }
   .answer p { color: #c9d3ea; max-width: 36em; }
-  @media (max-width: 980px) { .quotes { grid-template-columns: repeat(2, 1fr); } .answer { grid-template-columns: 1fr; } }
-  @media (max-width: 540px) { .quotes { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) {
+    .need-in, .answer { grid-template-columns: 1fr; }
+    .intro { position: static; }
+  }
 </style>
