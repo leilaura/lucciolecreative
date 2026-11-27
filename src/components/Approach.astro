@@ -70,7 +70,7 @@ const { approach } = Astro.props;
   .spot-t { display: grid; gap: 22px; max-width: 46em; }
   .spot-t .eyebrow { color: var(--giallo); }
   .spot-t h2 :global(.it) { color: var(--giallo); text-shadow: 0 0 .5em rgba(253, 214, 49, .45); }
-  .spot-t p { color: #ebdccd; font-size: 1.08rem; max-width: 34em; }
+  .spot-t p:not(.eyebrow) { color: #ebdccd; font-size: 1.08rem; max-width: 34em; }
   .ld { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); }
   .ld article { display: grid; gap: 12px; align-content: start; padding-top: 22px; border-top: 1px solid rgba(255, 251, 242, .22); min-width: 0; }
   .big {
